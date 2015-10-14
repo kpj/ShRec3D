@@ -2,13 +2,30 @@
 Visualizer for 3D point clouds
 """
 
+import numpy as np
+
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 
 
 COLOR_LIST = ['blue', 'red', 'green']
 
-def visualize(coord_pairs):
+def gen_sphere(x_pos, y_pos, z_pos, rad):
+    """ Generate sphere coordinates around given center
+    """
+    u, v = np.mgrid[0:2*np.pi:20j, 0:np.pi:10j]
+
+    x = np.cos(u) * np.sin(v)
+    y = np.sin(u) * np.sin(v)
+    z = np.cos(v)
+
+    x = rad * x + x_pos
+    y = rad * y + y_pos
+    z = rad * z + z_pos
+
+    return (x, y, z)
+
+def visualize(coord_pairs, show_spheres=True):
     """ Plot 3D coordinates
     """
     fig = plt.figure()
@@ -18,7 +35,12 @@ def visualize(coord_pairs):
         coords, label = pack
         ax.scatter(*zip(*coords), color=COLOR_LIST[i], label=label)
 
+        if show_spheres:
+            for xc, yc, zc in coords:
+                ax.plot_wireframe(*gen_sphere(xc, yc, zc, 0.21), color=COLOR_LIST[i])
+
     ax.legend()
+    plt.savefig('foo.svg', bbox_inches='tight')
     plt.show()
 
 
