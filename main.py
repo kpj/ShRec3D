@@ -2,13 +2,14 @@
 Python implementation of the ShRec3D algorithm
 """
 
+import sys
+
 import numpy as np
 import numpy.linalg as npl
 
 import networkx as nx
 
-import matplotlib.pyplot as plt
-from mpl_toolkits.mplot3d import Axes3D
+from visualizer import visualize
 
 
 def contacts2distances(contacts):
@@ -88,7 +89,10 @@ def deconstruct(coordinates, epsilon=0.2):
     distances = np.zeros((coordinates.shape[0], coordinates.shape[0]))
     for row in range(coordinates.shape[0]):
         for col in range(coordinates.shape[0]):
-            comp_sum = sum([(coordinates[row, d] - coordinates[col, d])**2 for d in range(dimension)])
+            comp_sum = sum(
+                [(coordinates[row, d] - coordinates[col, d])**2
+                    for d in range(dimension)]
+            )
             distances[row, col] = np.sqrt(comp_sum)
 
     # get contacts
@@ -103,34 +107,35 @@ def apply_shrec3d(contacts):
 
     return coordinates
 
-def visualize(coords, rec_coords):
-    """ Plot 3D coordinates
-    """
-    fig = plt.figure()
-    ax = fig.gca(projection='3d')
-
-    ax.scatter(*zip(*coords), color='blue', label='original points')
-    ax.scatter(*zip(*rec_coords), color='red', label='reconstructed points')
-
-    ax.legend()
-
-    plt.show()
 
 def main():
     """ Main function
     """
-    coords = np.array([
-        [1.2,0,0],
-        [1.4,0,0],  [1.4,0.2,0], [1.4,0.4,0],
-        [1.6,0,0],              [1.6,0.4,0],
-        [1.8,0,0],              [1.8,0.4,0],
-        [2,0,0],    [2,0.2,0],     [2,0.4,0]
-    ])
+    if len(sys.argv) == 1:
+        # simple example
+        coords = np.array([
+            [1.2,0,0],                  [1.2,0.4,0],
+            [1.4,0,0],  [1.4,0.2,0],    [1.4,0.4,0],
+            [1.6,0,0],                  [1.6,0.4,0],
+            [1.8,0,0],                  [1.8,0.4,0],
+            [2,0,0],    [2,0.2,0],      [2,0.4,0],
+                        [2.2,0.2,0]
+        ])
 
-    contacts = deconstruct(coords, epsilon=0.21)
-    rec_coords = apply_shrec3d(contacts)
+        contacts = deconstruct(coords, epsilon=0.21)
+        rec_coords = apply_shrec3d(contacts)
 
-    visualize(coords, rec_coords)
+        visualize([
+            (coords, 'original points'),
+            (rec_coords, 'reconstructed points')
+        ])
+    else:
+        fname = sys.argv[1]
+
+        contacts = np.loadtxt(fname)
+        rec_coords = apply_shrec3d(contacts)
+
+        np.save('%s.ptcld' % fname, rec_coords)
 
 if __name__ == '__main__':
     main()
