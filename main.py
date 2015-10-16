@@ -26,17 +26,16 @@ def contacts2distances(contacts):
                 graph.add_edge(col, row, weight=1/freq)
 
     # find shortest paths
-    spaths = nx.shortest_path_length(graph, weight='weight')
+    spath_mat = nx.floyd_warshall_numpy(graph, weight='weight')
 
     # create distance matrix
     distances = np.zeros(contacts.shape)
     for row in range(contacts.shape[0]):
         for col in range(contacts.shape[1]):
-            try:
-                distances[row, col] = spaths[row][col]
-            except KeyError:
-                # no path in graph is infinite distance
+            if spath_mat[row, col] == float('inf'):
                 distances[row, col] = 1000000
+            else:
+                distances[row, col] = spath_mat[row, col]
 
     return distances
 
