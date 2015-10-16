@@ -46,10 +46,16 @@ def distances2coordinates(distances):
     N = distances.shape[0]
     d_0 = []
 
+    # pre-caching
+    cache = {}
+    for j in range(N):
+        sumi = sum([distances[j, k]**2 for k in range(j+1, N)])
+        cache[j] = sumi
+
     # compute distances from center of mass
     for i in range(N):
-        sum1 = sum([distances[i, j]**2 for j in range(N)])
-        sum2 = sum([sum([distances[j, k]**2 for k in range(j+1, N)]) for j in range(N)])
+        sum1 = cache[i] + sum([distances[j, i]**2 for j in range(i+1)])
+        sum2 = sum([cache[j] for j in range(N)])
 
         val = 1/N * sum1 - 1/N**2 * sum2
         d_0.append(val)
@@ -86,7 +92,7 @@ def deconstruct(coordinates, epsilon=0.2):
     dimension = coordinates.shape[1]
 
     # get distances
-    distances = np.zeros((coordinates.shape[0], coordinates.shape[0]))
+    distances = np.zeros(2 * [coordinates.shape[0]])
     for row in range(coordinates.shape[0]):
         for col in range(coordinates.shape[0]):
             comp_sum = sum(
