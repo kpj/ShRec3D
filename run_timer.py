@@ -50,6 +50,10 @@ def generate_data(out_fname, data_directory):
 def plot_data(fname):
     """ Plot time points given in data file and compare to x**3
     """
+    if not os.path.isfile(fname):
+        print('No data has been generated yet, aborting...')
+        sys.exit(1)
+
     with open(fname, 'r') as fd:
         data = json.load(fd)
 
@@ -57,7 +61,7 @@ def plot_data(fname):
 
     const = 1e-8
     func = lambda x: const * x**3
-    
+
     plt.plot(
         *zip(*data),
         label=r'real data',
