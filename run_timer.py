@@ -64,7 +64,7 @@ def plot_data(fname):
 
     plt.plot(
         *zip(*data),
-        label=r'real data',
+        label=r'ShRec3D data points',
         linestyle='None', marker='h'
     )
     plt.plot(x, func(x), label=r'$ %.0e \cdot x^3$' % const)
