@@ -17,7 +17,7 @@ def generate_data(out_fname, data_directory):
     def store_result(duration, loci_number):
         """ Store result of current timing run
         """
-        print(' > %ds for %d loci' % (duration, loci_number))
+        print('  %ds for %d loci' % (duration, loci_number))
 
         if os.path.isfile(out_fname):
             with open(out_fname, 'r') as fd:
@@ -59,7 +59,7 @@ def plot_data(fname):
 
     x = np.arange(0, max(data, key=lambda e: e[0])[0], 1)
 
-    const = 1e-8
+    const = .55e-8
     func = lambda x: const * x**3
 
     plt.plot(
@@ -69,7 +69,7 @@ def plot_data(fname):
     )
     plt.plot(x, func(x), label=r'$ %.0e \cdot x^3$' % const)
 
-    plt.title(r'')
+    plt.title(r'Complexity ($\in \Theta\left(x^3\right)$) visualization of ShRec3D')
     plt.xlabel('loci number')
     plt.ylabel('execution time (seconds)')
     plt.legend(loc='best')
