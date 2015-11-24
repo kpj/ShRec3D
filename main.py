@@ -52,9 +52,9 @@ def distances2coordinates(distances):
         cache[j] = sumi
 
     # compute distances from center of mass
+    sum2 = sum([cache[j] for j in range(N)])
     for i in range(N):
         sum1 = cache[i] + sum([distances[j, i]**2 for j in range(i+1)])
-        sum2 = sum([cache[j] for j in range(N)])
 
         val = 1/N * sum1 - 1/N**2 * sum2
         d_0.append(val)
