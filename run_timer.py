@@ -2,6 +2,8 @@
 Investigate complexity of algorithm
 """
 
+from __future__ import division, print_function
+
 import json, time, os
 import traceback, sys
 

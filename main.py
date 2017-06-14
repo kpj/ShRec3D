@@ -2,6 +2,8 @@
 Python implementation of the ShRec3D algorithm
 """
 
+from __future__ import division, print_function
+
 import sys
 
 import numpy as np
